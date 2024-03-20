@@ -35,11 +35,14 @@ test = data.skip(train_size + val_size).take(test_size)
 model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), 1, activation='relu', input_shape=(288, 432, 3)))
 model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Dropout(.5))
 
 model.add(layers.Conv2D(64, (3, 3), 1, activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Dropout(.5))
 
 model.add(layers.Conv2D(64, (3, 3), 1, activation='relu'))
+model.add(layers.Dropout(.5))
 model.add(layers.Flatten())
 
 model.add(layers.Dense(64, activation='relu'))
@@ -56,12 +59,12 @@ tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir = log_dir)
 history = model.fit(train, epochs=10, validation_data=val, callbacks=[tensorboard_callback])
 
 # Plotting data
-plt.plot(history.history['accuracy'], label='accuracy')
-plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
+plt.plot(history.history['loss'], label='loss')
+plt.plot(history.history['val_loss'], label = 'val_loss')
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
-plt.ylim([0.5, 1])
 plt.legend(loc='lower right')
+plt.savefig('plot.png')
 plt.show()
 
 test_loss, test_acc = model.evaluate(test, verbose=2)         
